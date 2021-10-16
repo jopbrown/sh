@@ -138,4 +138,4 @@ sgo main.go arg1 arg2
 ```
 
 ## License
-Apache 2.0.
+MIT
