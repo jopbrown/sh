@@ -74,6 +74,7 @@ func TestMkdirCd(t *testing.T) {
 	assert.Equal(t, []string{"tmp/1", "tmp/2"}, Ls("tmp/").Sed(slashFN).Slice())
 
 	Cd("tmp")
-
 	assert.Equal(t, []string{"1", "2"}, Ls().Sed(slashFN).Slice())
+
+	Cd("..")
 }
