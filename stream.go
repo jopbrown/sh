@@ -60,6 +60,22 @@ func (s Stream) PrintTo(w io.Writer) {
 	}
 }
 
+func (s Stream) PrintToFile(fname string, append bool) {
+	flag := os.O_CREATE | os.O_WRONLY
+	if append {
+		flag |= os.O_APPEND
+	} else {
+		flag |= os.O_TRUNC
+	}
+	f, err := os.OpenFile(fname, flag, 0644)
+	if CheckErr(err) {
+		return
+	}
+	defer f.Close()
+
+	s.PrintTo(f)
+}
+
 func (s Stream) Slice() []string {
 	ss := make([]string, 0, 10)
 	for line := range s {
