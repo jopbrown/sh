@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -20,7 +21,7 @@ func yieldStream(fn func(Stream)) Stream {
 	return s
 }
 
-func From(r io.Reader) Stream {
+func FromReader(r io.Reader) Stream {
 	sc := bufio.NewScanner(r)
 
 	return yieldStream(func(s Stream) {
@@ -34,12 +35,38 @@ func From(r io.Reader) Stream {
 	})
 }
 
+func From(ss ...string) Stream {
+	return yieldStream(func(s Stream) {
+		for _, line := range ss {
+			s <- line
+		}
+	})
+}
+
+func FromFields(fields string) Stream {
+	return yieldStream(func(s Stream) {
+		for _, line := range strings.Fields(fields) {
+			s <- line
+		}
+	})
+}
+
 func FromSlice(ss []string) Stream {
 	return yieldStream(func(s Stream) {
 		for _, line := range ss {
 			s <- line
 		}
 	})
+}
+
+func Echo(msg string) Stream {
+	r := strings.NewReader(msg)
+	xtrace("echo %s", msg)
+	return FromReader(r)
+}
+
+func Echof(format string, v ...interface{}) Stream {
+	return Echo(fmt.Sprintf(format, v...))
 }
 
 func (s Stream) Print() {
@@ -67,6 +94,12 @@ func (s Stream) PrintToFile(fname string, append bool) {
 	} else {
 		flag |= os.O_TRUNC
 	}
+
+	err := os.MkdirAll(filepath.Dir(fname), 0755)
+	if CheckErr(err) {
+		return
+	}
+
 	f, err := os.OpenFile(fname, flag, 0644)
 	if CheckErr(err) {
 		return

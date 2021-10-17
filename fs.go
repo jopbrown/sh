@@ -7,19 +7,9 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
+	"time"
 )
-
-func Echo(msg string) Stream {
-	r := strings.NewReader(msg)
-	xtrace("echo %s", msg)
-	return From(r)
-}
-
-func Echof(format string, v ...interface{}) Stream {
-	return Echo(fmt.Sprintf(format, v...))
-}
 
 func Glob(pathList ...string) Stream {
 	return yieldStream(func(s Stream) {
@@ -242,60 +232,27 @@ func Mv(args ...string) {
 	}
 }
 
-func Grep(pattern string, fileList ...string) Stream {
-	return Cat(Ls(fileList...).Slice()...).Grep(pattern)
-}
-
-func (sin Stream) Grep(pattern string) Stream {
-	xtrace("grep '%s'", pattern)
-	re, err := regexp.Compile(pattern)
-	if CheckErr(err) {
-		return nil
-	}
-
-	return yieldStream(func(sout Stream) {
-		for line := range sin {
-			if re.MatchString(line) {
-				sout <- line
-			}
-		}
-	})
-}
-
-func GrepV(pattern string, fileList ...string) Stream {
-	return Cat(Ls(fileList...).Slice()...).GrepV(pattern)
-}
-
-func (sin Stream) GrepV(pattern string) Stream {
-	xtrace("grep -v '%s'", pattern)
-	re, err := regexp.Compile(pattern)
-	if CheckErr(err) {
-		return nil
-	}
-
-	return yieldStream(func(sout Stream) {
-		for line := range sin {
-			if !re.MatchString(line) {
-				sout <- line
-			}
-		}
-	})
-}
-
 func Touch(args ...string) {
-	for line := range Glob(args...) {
-		xtrace("touch %s", line)
+	for fname := range Glob(args...) {
+		xtrace("touch %s", fname)
 
-		err := os.MkdirAll(filepath.Dir(line), 0755)
+		err := os.MkdirAll(filepath.Dir(fname), 0755)
 		if CheckErr(err) {
 			break
 		}
 
-		f, err := os.OpenFile(line, os.O_WRONLY|os.O_CREATE, 0666)
-		if CheckErr(err) {
-			break
+		if ExistsFile(fname) {
+			now := time.Now()
+			if CheckErr(os.Chtimes(fname, now, now)) {
+				break
+			}
+		} else {
+			f, err := os.OpenFile(fname, os.O_WRONLY|os.O_CREATE, 0666)
+			if CheckErr(err) {
+				break
+			}
+			f.Close()
 		}
-		f.Close()
 	}
 }
 
@@ -308,7 +265,7 @@ func Cat(args ...string) Stream {
 			}
 
 			xtrace("cat %s", fpath)
-			for line := range From(f) {
+			for line := range FromReader(f) {
 				s <- line
 			}
 			f.Close()
@@ -384,30 +341,8 @@ func Pwd() string {
 	return pwd
 }
 
-func Args() []string {
-	return os.Args
-}
-
-func ArgN() int {
-	return len(os.Args)
-}
-
-func Arg(n int) string {
-	if n < 0 || n >= ArgN() {
-		CheckErr(fmt.Errorf("arg[%d] is not available", n))
-		return ""
+func Chmod(perm int, fileList ...string) {
+	for fname := range Glob(fileList...) {
+		CheckErr(os.Chmod(fname, os.FileMode(perm)))
 	}
-	return os.Args[n]
-}
-
-func Sed(fn func(string) string, fname string) Stream {
-	return Cat(fname).Sed(fn)
-}
-
-func (sin Stream) Sed(fn func(string) string) Stream {
-	return yieldStream(func(sout Stream) {
-		for str := range sin {
-			sout <- fn(str)
-		}
-	})
 }

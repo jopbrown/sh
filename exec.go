@@ -25,7 +25,7 @@ func (sin Stream) Exec(name string, args ...string) Stream {
 		CheckErr(execV(fin, w, os.Stderr, name, args...))
 	}()
 
-	return From(r)
+	return FromReader(r)
 }
 
 func (sin Stream) Exec2(name string, args ...string) Stream {
@@ -42,7 +42,7 @@ func (sin Stream) Exec2(name string, args ...string) Stream {
 		CheckErr(execV(fin, w, w, name, args...))
 	}()
 
-	return From(r)
+	return FromReader(r)
 }
 
 func Exec2(name string, args ...string) Stream {

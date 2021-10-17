@@ -78,3 +78,19 @@ func xtrace(format string, v ...interface{}) {
 		io.WriteString(os.Stderr, "\n")
 	}
 }
+
+func Args() []string {
+	return os.Args
+}
+
+func ArgN() int {
+	return len(os.Args)
+}
+
+func Arg(n int) string {
+	if n < 0 || n >= ArgN() {
+		CheckErr(fmt.Errorf("arg[%d] is not available", n))
+		return ""
+	}
+	return os.Args[n]
+}

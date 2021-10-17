@@ -1,7 +1,6 @@
 package sh
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -10,28 +9,6 @@ import (
 
 func slashFN(str string) string {
 	return filepath.ToSlash(str)
-}
-
-func TestMain(m *testing.M) {
-	SetStopOnError(true)
-	SetXtrace(true)
-	os.Exit(m.Run())
-}
-
-func TestEcho(t *testing.T) {
-	var input, output string
-
-	input = "hello world"
-	output = Echo(input).String()
-	assert.Equal(t, input+"\n", output)
-
-	input = "hello\nworld"
-	output = Echo(input).String()
-	assert.Equal(t, input+"\n", output)
-
-	input = "hello\nworld\n"
-	output = Echo(input).String()
-	assert.Equal(t, input, output)
 }
 
 func TestTouchCpMvRm(t *testing.T) {

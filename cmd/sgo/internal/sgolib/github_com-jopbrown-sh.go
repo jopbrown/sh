@@ -16,6 +16,7 @@ func init() {
 		"Cat":             reflect.ValueOf(sh.Cat),
 		"Cd":              reflect.ValueOf(sh.Cd),
 		"CheckErr":        reflect.ValueOf(sh.CheckErr),
+		"Chmod":           reflect.ValueOf(sh.Chmod),
 		"Cp":              reflect.ValueOf(sh.Cp),
 		"Echo":            reflect.ValueOf(sh.Echo),
 		"Echof":           reflect.ValueOf(sh.Echof),
@@ -28,11 +29,14 @@ func init() {
 		"Exit":            reflect.ValueOf(sh.Exit),
 		"ExitIfErr":       reflect.ValueOf(sh.ExitIfErr),
 		"From":            reflect.ValueOf(sh.From),
+		"FromFields":      reflect.ValueOf(sh.FromFields),
+		"FromReader":      reflect.ValueOf(sh.FromReader),
 		"FromSlice":       reflect.ValueOf(sh.FromSlice),
 		"Glob":            reflect.ValueOf(sh.Glob),
 		"Grep":            reflect.ValueOf(sh.Grep),
 		"GrepV":           reflect.ValueOf(sh.GrepV),
 		"Ls":              reflect.ValueOf(sh.Ls),
+		"Make":            reflect.ValueOf(sh.Make),
 		"Mkdir":           reflect.ValueOf(sh.Mkdir),
 		"Mv":              reflect.ValueOf(sh.Mv),
 		"PanicIfErr":      reflect.ValueOf(sh.PanicIfErr),
@@ -47,6 +51,7 @@ func init() {
 		"Touch":           reflect.ValueOf(sh.Touch),
 
 		// type definitions
-		"Stream": reflect.ValueOf((*sh.Stream)(nil)),
+		"MakeFunc": reflect.ValueOf((*sh.MakeFunc)(nil)),
+		"Stream":   reflect.ValueOf((*sh.Stream)(nil)),
 	}
 }
