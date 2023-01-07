@@ -18,8 +18,7 @@ const (
 )
 
 var context struct {
-	entry string
-	// ventry    string
+	entry     string
 	args      []string
 	vendorDir string
 	fsys      fs.FS
@@ -52,13 +51,15 @@ func parseArgs() {
 		log.Fatalf("usage: %s [-vendor <VENDOR_DIR>] <ENTRY_GO_FILE> [args...]", os.Args[0])
 	}
 
-	context.entry = context.args[0]
+	rentry := context.args[0]
+	ventry := filepath.Base(rentry)
+	context.entry = ventry
 
 	fsys := vfs.New()
-	fsys.Add(context.entry, context.entry)
+	fsys.Add(rentry, ventry)
 
 	if len(context.vendorDir) == 0 {
-		context.vendorDir = filepath.Join(filepath.Dir(context.entry), "vendor")
+		context.vendorDir = filepath.Join(filepath.Dir(rentry), "vendor")
 	}
 
 	err := filepath.Walk(context.vendorDir, func(path string, info fs.FileInfo, err error) error {
