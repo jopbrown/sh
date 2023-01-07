@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func Glob(pathList ...string) Stream {
+func glob(pathList ...string) Stream {
 	return yieldStream(func(s Stream) {
 		for _, path := range pathList {
 			if !strings.ContainsRune(path, '*') {
@@ -41,7 +41,7 @@ func Ls(args ...string) Stream {
 				args[i] = arg
 			}
 		}
-		return Glob(args...)
+		return glob(args...)
 	}
 
 	xtrace("ls")
@@ -63,7 +63,7 @@ func Rm(args ...string) {
 		CheckErr(errors.New("rm: missing args"))
 	}
 
-	for fpath := range Glob(args...) {
+	for fpath := range glob(args...) {
 		xtrace("rm %s", fpath)
 		err := os.RemoveAll(fpath)
 		if CheckErr(err) {
@@ -80,7 +80,7 @@ func Cp(args ...string) {
 
 	srcList, dst := args[:argCnt-1], args[argCnt-1]
 
-	for src := range Glob(srcList...) {
+	for src := range glob(srcList...) {
 		copy(dst, src)
 	}
 }
@@ -193,7 +193,7 @@ func Mv(args ...string) {
 	manySrc := false
 	isDstDir := ExistsDir(dst) || dst[len(dst)-1] == '/'
 
-	for src := range Glob(srcList...) {
+	for src := range glob(srcList...) {
 		if !Exists(src) {
 			CheckErr(fmt.Errorf("mv: src not exist: %v", src))
 			break
@@ -233,7 +233,7 @@ func Mv(args ...string) {
 }
 
 func Touch(args ...string) {
-	for fname := range Glob(args...) {
+	for fname := range glob(args...) {
 		xtrace("touch %s", fname)
 
 		err := os.MkdirAll(filepath.Dir(fname), 0755)
@@ -258,7 +258,7 @@ func Touch(args ...string) {
 
 func Cat(args ...string) Stream {
 	return yieldStream(func(s Stream) {
-		for fpath := range Glob(args...) {
+		for fpath := range glob(args...) {
 			f, err := os.Open(fpath)
 			if CheckErr(err) {
 				return
@@ -342,7 +342,7 @@ func Pwd() string {
 }
 
 func Chmod(perm int, fileList ...string) {
-	for fname := range Glob(fileList...) {
+	for fname := range glob(fileList...) {
 		CheckErr(os.Chmod(fname, os.FileMode(perm)))
 	}
 }

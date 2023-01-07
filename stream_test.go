@@ -1,10 +1,17 @@
 package sh
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMain(m *testing.M) {
+	SetExitOnError(true)
+	SetXtrace(true)
+	os.Exit(m.Run())
+}
 
 func TestEcho(t *testing.T) {
 	var input, output string

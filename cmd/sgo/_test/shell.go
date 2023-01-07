@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	sh.SetStopOnError(true)
+	sh.SetExitOnError(true)
 	sh.SetXtrace(true)
 }
 

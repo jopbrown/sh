@@ -9,10 +9,12 @@ import (
 	"strings"
 )
 
+const _MAX_BUFFER_LINES = 1000
+
 type Stream chan string
 
 func yieldStream(fn func(Stream)) Stream {
-	s := make(Stream)
+	s := make(Stream, _MAX_BUFFER_LINES)
 	go func() {
 		defer close(s)
 		fn(s)

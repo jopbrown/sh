@@ -8,10 +8,9 @@ import (
 )
 
 var (
-	stopOnErrorMode  bool
-	panicOnErrorMode bool
-	xtraceMode       bool
-	lastErr          error
+	exitOnErrorMode bool
+	xtraceMode      bool
+	lastErr         error
 )
 
 func Err() error {
@@ -22,15 +21,9 @@ func Exit(code int) {
 	os.Exit(code)
 }
 
-func SetStopOnError(enable bool) bool {
-	old := stopOnErrorMode
-	stopOnErrorMode = enable
-	return old
-}
-
-func SetPanicOnError(enable bool) bool {
-	old := panicOnErrorMode
-	panicOnErrorMode = enable
+func SetExitOnError(enable bool) bool {
+	old := exitOnErrorMode
+	exitOnErrorMode = enable
 	return old
 }
 
@@ -46,12 +39,6 @@ func ExitIfErr() {
 	}
 }
 
-func PanicIfErr() {
-	if lastErr != nil {
-		panic(fmt.Errorf("%+v", lastErr))
-	}
-}
-
 func CheckErr(err error) bool {
 	if err == nil {
 		return false
@@ -59,12 +46,8 @@ func CheckErr(err error) bool {
 
 	lastErr = err
 
-	if stopOnErrorMode {
+	if exitOnErrorMode {
 		ExitIfErr()
-	}
-
-	if panicOnErrorMode {
-		PanicIfErr()
 	}
 
 	fmt.Fprintf(os.Stderr, "error: %+v", lastErr)
@@ -74,22 +57,22 @@ func CheckErr(err error) bool {
 
 func xtrace(format string, v ...interface{}) {
 	if xtraceMode {
-		fmt.Fprintf(os.Stderr, "+x "+format, v...)
+		fmt.Fprintf(os.Stderr, "+ "+format, v...)
 		io.WriteString(os.Stderr, "\n")
 	}
 }
 
 func Args() []string {
-	return os.Args
+	return os.Args[1:]
 }
 
 func ArgN() int {
-	return len(os.Args)
+	return len(os.Args) - 1
 }
 
 func Arg(n int) string {
-	if n < 0 || n >= ArgN() {
-		CheckErr(fmt.Errorf("arg[%d] is not available", n))
+	if n < 0 || n > ArgN() {
+		// CheckErr(fmt.Errorf("arg[%d] is not available", n))
 		return ""
 	}
 	return os.Args[n]

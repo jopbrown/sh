@@ -50,7 +50,7 @@ func Exec2(name string, args ...string) Stream {
 }
 
 func execV(fin io.Reader, fout, ferr io.WriteCloser, name string, args ...string) error {
-	cmd := exec.Command(name, Glob(args...).Slice()...)
+	cmd := exec.Command(name, glob(args...).Slice()...)
 	cmd.Env = os.Environ()
 	cmd.Stdin = fin
 	cmd.Stdout = fout

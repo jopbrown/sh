@@ -8,17 +8,19 @@ import (
 )
 
 func init() {
-	sh.SetStopOnError(true)
+	// set -e
+	sh.SetExitOnError(true)
+	// set -x
 	sh.SetXtrace(true)
 }
 
 func main() {
 	// echo "$#"
-	sh.Echof("%d", sh.ArgN())
+	sh.Echof("%d", sh.ArgN()).Print()
 	// echo "$0"
-	sh.Echo(sh.Arg(0))
+	sh.Echo(sh.Arg(0)).Print()
 	// echo "$1"
-	sh.Echo(sh.Arg(1))
+	sh.Echo(sh.Arg(1)).Print()
 
 	// for arg in $@; do
 	// 	echo $arg
@@ -26,7 +28,7 @@ func main() {
 	sh.FromSlice(sh.Args()).Print()
 
 	// pwd
-	sh.Echo(sh.Pwd())
+	sh.Echo(sh.Pwd()).Print()
 	// echo "$PATH"
 	sh.Echo(os.Getenv("PATH")).Print()
 
@@ -34,9 +36,9 @@ func main() {
 	sh.Rm("tmp*")
 
 	// ls
-	sh.Ls()
+	sh.Ls().Print()
 	// ls *.go
-	sh.Ls("*.go")
+	sh.Ls("*.go").Print()
 
 	// mkdir -p tmp tmp2
 	sh.Mkdir("tmp", "tmp2")
@@ -74,7 +76,7 @@ func main() {
 		sh.Echo("dir exist").Print()
 	}
 
-	sh.Ls("*.txt")
+	sh.Ls("*.txt").Print()
 	// ls *.txt
 	sh.Rm("*.txt", "*.go")
 	// rm *.txt *.go

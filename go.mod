@@ -1,10 +1,10 @@
 module github.com/jopbrown/sh
 
-go 1.17
+go 1.18
 
 require (
 	github.com/stretchr/testify v1.7.1
-	github.com/traefik/yaegi v0.11.3
+	github.com/traefik/yaegi v0.14.3
 )
 
 require (
