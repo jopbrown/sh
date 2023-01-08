@@ -35,9 +35,9 @@ func init() {
 		"Grep":           reflect.ValueOf(sh.Grep),
 		"GrepV":          reflect.ValueOf(sh.GrepV),
 		"Ls":             reflect.ValueOf(sh.Ls),
-		"Make":           reflect.ValueOf(sh.Make),
 		"Mkdir":          reflect.ValueOf(sh.Mkdir),
 		"Mv":             reflect.ValueOf(sh.Mv),
+		"NewMakeFile":    reflect.ValueOf(sh.NewMakeFile),
 		"Popd":           reflect.ValueOf(sh.Popd),
 		"Pushd":          reflect.ValueOf(sh.Pushd),
 		"Pwd":            reflect.ValueOf(sh.Pwd),
@@ -48,7 +48,11 @@ func init() {
 		"Touch":          reflect.ValueOf(sh.Touch),
 
 		// type definitions
-		"MakeFunc": reflect.ValueOf((*sh.MakeFunc)(nil)),
-		"Stream":   reflect.ValueOf((*sh.Stream)(nil)),
+		"MakeAuto":  reflect.ValueOf((*sh.MakeAuto)(nil)),
+		"MakeFile":  reflect.ValueOf((*sh.MakeFile)(nil)),
+		"MakeFunc":  reflect.ValueOf((*sh.MakeFunc)(nil)),
+		"MakeTask":  reflect.ValueOf((*sh.MakeTask)(nil)),
+		"MakeTasks": reflect.ValueOf((*sh.MakeTasks)(nil)),
+		"Stream":    reflect.ValueOf((*sh.Stream)(nil)),
 	}
 }

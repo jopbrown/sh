@@ -160,8 +160,8 @@ func copyDir(dstDir, srcDir string) {
 			return nil
 		}
 		src := path
-		relsrc, err := filepath.Rel(srcDir, path)
-		if CheckErr(err) {
+		relsrc, errrel := filepath.Rel(srcDir, path)
+		if CheckErr(errrel) {
 			return nil
 		}
 		dst := filepath.Join(dstDir, relsrc)
